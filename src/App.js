@@ -1,25 +1,17 @@
-import React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
+import AddTask from './components/AddTask';
 
 function App() {
-    const [tasks, setTasks] = useState([{
-        id: 1,
-        text: 'Doctor appointment',
-        day: 'Feb 5th at 2:30pm',
-        reminder: true,
-    }, {
-        id: 2,
-        text: 'Meeting at Restaurant',
-        day: 'Feb 6th at 1:30pm',
-        reminder: true,
-    }, {
-        id: 3,
-        text: 'Do a shopping',
-        day: 'Feb 5th at 2:30pm',
-        reminder: false,
-    },])
+    const [showAddTask, setShowAddTask] = useState(false);
+    const [tasks, setTasks] = useState([])
+
+    const addTask = (task) => {
+        const id = Math.floor(Math.random() * 1000 + 1)
+        const newTask = {id, ...task};
+        setTasks([...tasks, newTask])
+    }
     const toggleReminder = (id) => {
         setTasks(
             tasks.map((task) =>
@@ -32,9 +24,11 @@ function App() {
     const deleteTask = (id) => {
         setTasks(tasks.filter((task) => task.id !== id))
     };
+
     return (
         <div className='container'>
-            <Header/>
+            <Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask}/>
+            {showAddTask && <AddTask onAdd={addTask}/>}
             {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/> : 'No Tasks'}
         </div>
 
