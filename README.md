@@ -5,7 +5,7 @@
 
  1.  Install locally all dependecies using `npm install`.
  
- 3.  Once you done - run json server mock using `npm run server`.
+ 3.  Once you're done - run JSON server mock using `npm run server`.
    
  5.  After step 1 and 2 you can run project using `npm start`.
  
