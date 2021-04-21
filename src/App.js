@@ -7,10 +7,39 @@ function App() {
     const [showAddTask, setShowAddTask] = useState(false);
     const [tasks, setTasks] = useState([])
 
-    const addTask = (task) => {
-        const id = Math.floor(Math.random() * 1000 + 1)
-        const newTask = {id, ...task};
-        setTasks([...tasks, newTask])
+    useEffect(() => {
+        const getTasks = async () => {
+            const tasksFromServer = await fetchTasks();
+            setTasks(tasksFromServer);
+        }
+        getTasks();
+    }, [])
+
+    const fetchTasks = async () => {
+        const respond = await fetch('http://localhost:5000/tasks')
+        const data = await respond.json()
+        return data;
+    }
+    const fetchTask = async (id) => {
+        const respond = await fetch(`http://localhost:5000/tasks/${id}`)
+        const data = await respond.json()
+        return data;
+    }
+    const addTask = async (task) => {
+        const respond = await fetch('http://localhost:5000/tasks',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(task)
+            })
+        const data = await respond.json();
+        setTasks([...tasks, data])
+
+        // const id = Math.floor(Math.random() * 1000 + 1)
+        // const newTask = {id, ...task};
+        // setTasks([...tasks, newTask])
     }
     const toggleReminder = (id) => {
         setTasks(
