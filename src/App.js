@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
 import AddTask from './components/AddTask';
@@ -41,16 +42,32 @@ function App() {
         // const newTask = {id, ...task};
         // setTasks([...tasks, newTask])
     }
-    const toggleReminder = (id) => {
+    const toggleReminder = async (id) => {
+        const taskToToggle = await fetchTask(id)
+        const updateTask = {...taskToToggle, reminder: !taskToToggle.reminder}
+
+        const respond = await fetch(`http://localhost:5000/tasks/${id}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(updateTask)
+            })
+        const data = respond.json()
         setTasks(
             tasks.map((task) =>
                 task.id === id ? {
                     ...task, reminder:
-                        !task.reminder
+                    data.reminder
                 } : task
             ))
     };
-    const deleteTask = (id) => {
+    const deleteTask = async (id) => {
+        await fetch(
+            `http://localhost:5000/tasks/${id}`,
+            {method: 'DELETE'});
+
         setTasks(tasks.filter((task) => task.id !== id))
     };
 
